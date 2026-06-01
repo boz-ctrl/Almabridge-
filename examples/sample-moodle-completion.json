@@ -1,0 +1,19 @@
+{
+  "source": "moodle",
+  "event_type": "course_completed",
+  "learner": {
+    "moodle_user_id": "12345",
+    "display_name": "Example Learner",
+    "email_hash": "replace-with-hash"
+  },
+  "course": {
+    "moodle_course_id": "DIGI101",
+    "course_name": "Digital Skills Foundations",
+    "completion_date": "2026-06-01T09:00:00Z"
+  },
+  "credential_request": {
+    "credential_title": "Digital Skills Completion Credential",
+    "issuer_id": "issuer_demo_university",
+    "template_id": "template_digital_skills_foundation"
+  }
+}
