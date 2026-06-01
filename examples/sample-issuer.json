@@ -1,0 +1,17 @@
+{
+  "issuer_id": "issuer_demo_university",
+  "issuer_name": "Demo University",
+  "issuer_type": "university",
+  "website": "https://example.edu",
+  "jurisdiction": "GB",
+  "verified": false,
+  "accreditation": {
+    "status": "community_demo_only",
+    "reference": null,
+    "scope": "Demo credentials only"
+  },
+  "contact": {
+    "name": "Credential Office",
+    "email": "credentials@example.edu"
+  }
+}
