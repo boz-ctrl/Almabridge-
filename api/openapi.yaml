@@ -1,0 +1,215 @@
+openapi: 3.0.3
+info:
+  title: AlmaBridge Community API
+  version: 0.1.0
+  description: Starter API specification for AlmaBridge Community Edition credential issuing, status and verification workflows.
+servers:
+  - url: https://example.org/wp-json/almabridge/v1
+paths:
+  /credentials:
+    post:
+      summary: Create or issue a credential
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialCreateRequest'
+      responses:
+        '201':
+          description: Credential created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Credential'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorised
+  /credentials/{credentialId}:
+    get:
+      summary: Retrieve credential metadata
+      parameters:
+        - $ref: '#/components/parameters/CredentialId'
+      responses:
+        '200':
+          description: Credential found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Credential'
+        '404':
+          description: Credential not found
+  /credentials/{credentialId}/status:
+    get:
+      summary: Check credential lifecycle status
+      parameters:
+        - $ref: '#/components/parameters/CredentialId'
+      responses:
+        '200':
+          description: Credential status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialStatusResponse'
+  /credentials/{credentialId}/verify:
+    get:
+      summary: Verify credential validity
+      parameters:
+        - $ref: '#/components/parameters/CredentialId'
+      responses:
+        '200':
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResponse'
+  /credentials/{credentialId}/revoke:
+    post:
+      summary: Revoke a credential
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CredentialId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LifecycleActionRequest'
+      responses:
+        '200':
+          description: Credential revoked
+  /credentials/{credentialId}/suspend:
+    post:
+      summary: Suspend a credential
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CredentialId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LifecycleActionRequest'
+      responses:
+        '200':
+          description: Credential suspended
+  /credentials/{credentialId}/reinstate:
+    post:
+      summary: Reinstate a suspended credential
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CredentialId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LifecycleActionRequest'
+      responses:
+        '200':
+          description: Credential reinstated
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    CredentialId:
+      name: credentialId
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    CredentialCreateRequest:
+      type: object
+      required:
+        - title
+        - issuer_id
+        - learner
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        issuer_id:
+          type: string
+        learner:
+          type: object
+          properties:
+            display_name:
+              type: string
+            learner_id:
+              type: string
+        issued_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+    Credential:
+      type: object
+      properties:
+        credential_id:
+          type: string
+        claim_code:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        issuer_id:
+          type: string
+        status:
+          type: string
+          enum: [draft, issued, active, suspended, revoked, expired, renewed]
+        issued_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+        solana_mint_address:
+          type: string
+        solana_transaction_signature:
+          type: string
+    CredentialStatusResponse:
+      type: object
+      properties:
+        credential_id:
+          type: string
+        status:
+          type: string
+          enum: [draft, issued, active, suspended, revoked, expired, renewed]
+        checked_at:
+          type: string
+          format: date-time
+    VerificationResponse:
+      type: object
+      properties:
+        credential_id:
+          type: string
+        valid:
+          type: boolean
+        status:
+          type: string
+        issuer_name:
+          type: string
+        checked_at:
+          type: string
+          format: date-time
+    LifecycleActionRequest:
+      type: object
+      required:
+        - reason
+      properties:
+        reason:
+          type: string
+        evidence_reference:
+          type: string
