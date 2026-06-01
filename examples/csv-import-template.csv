@@ -1,0 +1,2 @@
+learner_display_name,learner_email,credential_title,credential_description,issuer_id,issued_at,expires_at,status
+Example Learner,replace-with-learner-email,Digital Skills Completion Credential,Issued for successful completion of a short digital skills programme,issuer_demo_university,2026-06-01,2029-06-01,active
